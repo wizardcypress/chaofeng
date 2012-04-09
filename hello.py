@@ -8,7 +8,7 @@ class Hello(Frame):
         self.close()
 
     def clear(self):
-        self.write('Don leave me alone ...\n')
+        self.write('Don leave me alone ...\r\n')
 
 if __name__ == '__main__' :
     s = Server(Hello)
