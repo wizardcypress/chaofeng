@@ -8,9 +8,9 @@ class NMenu:
         '''
         self._data = data
         self._select = default_ord
-        self.session = frame.session
+        self.frame = frame
         self.keymap = dict( (x[1][2],x[0]) for x in filter(lambda x:len(x[1])>2,enumerate(data)))
-        self.session.push(move2(*self._data[self._select][0])+'>')
+        self.frame.write(move2(*self._data[self._select][0])+'>')
 
     def fetch(self):
         return self._data[self._select][1]
@@ -25,7 +25,7 @@ class NMenu:
         elif data in self.keymap :
             self._select = self.keymap[data]
         else : return
-        self.session.push(backspace*2+move2(*self._data[self._select][0])+'>')
+        self.frame.write(backspace*2+move2(*self._data[self._select][0])+'>')
         
 
 class TextInput:

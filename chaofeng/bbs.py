@@ -1,4 +1,5 @@
 import eventlet
+from chaofeng import ascii
 
 class GotoInterrupt(Exception):
     
@@ -53,6 +54,7 @@ class Server:
         def new_connect(sock):
             next_frame = self.root
             session = {}
+            sock.send(ascii.CMD_CHAR_PER)
             while True:
                 try:
                     now = next_frame(self,sock,session)

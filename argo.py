@@ -1,6 +1,7 @@
 from chaofeng import Frame, Server
 from chaofeng import ascii as c
 from chaofeng.ui import TextInput,NMenu
+from chaofeng.g import static
 
 z = 0
 
@@ -9,8 +10,10 @@ def check_username(data):
 
 class Welcome(Frame):
 
+    background = static['welcome']
+
     def initialize(self,data_list):
-        self.write(self.session.server.static['welcome']+c.move2(24,13))
+        self.write(self.background+c.move2(24,13))
         self.input = TextInput(self)
         self.flag = 0
 
@@ -37,9 +40,11 @@ class Welcome(Frame):
 
 class Main(Frame):
 
+    background = static['main']
+
     def initialize(self):
         print self.session
-        self.write(self.session.server.static['main']+c.move2(12,5))
+        self.write(self.background+c.move2(12,5))
         self.menu = NMenu(self,[
                 ( (12,5),'Group','e'),
                 ( (13,5),'Digest','d'),

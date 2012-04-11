@@ -9,3 +9,4 @@
 from chaofeng.bbs import Server,Frame
 import chaofeng.ascii
 import chaofeng.ui
+import chaofeng.g
