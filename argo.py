@@ -38,6 +38,7 @@ class Welcome(Frame):
 class Main(Frame):
 
     def initialize(self):
+        print self.session
         self.write(self.session.server.static['main']+c.move2(12,5))
         self.menu = NMenu(self,[
                 ( (12,5),'Group','e'),
