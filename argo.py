@@ -36,14 +36,15 @@ class Welcome(Frame):
                     self.close()
             
     def clear(self):
+        del self.input
+        def self.flag
         pass
-
+    
 class Main(Frame):
 
     background = static['main']
 
     def initialize(self):
-        print self.session
         self.write(self.background+c.move2(12,5))
         self.menu = NMenu(self,[
                 ( (12,5),'Group','e'),
@@ -60,7 +61,7 @@ class Main(Frame):
             print self.menu.fetch()
     
     def clear(self):
-        pass
+        del self.menu
 
 if __name__ == '__main__' :
     s = Server(Main)

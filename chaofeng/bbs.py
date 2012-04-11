@@ -10,6 +10,8 @@ class EndInterrupt(Exception): pass
 
 class Frame:
 
+    buffer_size = 1024
+    
     g = {}
 
     def __init__(self,server,sock,session):
@@ -20,7 +22,7 @@ class Frame:
 
     def loop(self):
         while True:
-            data = self.sock.recv(1024)
+            data = self.read()
             self.get(data)
 
     def initialize(self):
@@ -32,6 +34,14 @@ class Frame:
     def get(self,data):
         pass
 
+    def read(self,buffer_size=1024):
+        data = self.sock.recv(buffer_size)
+        if not data :
+            self.clear()
+            raise EndInterrupt
+        else:
+            return data
+            
     def write(self,data):
         self.sock.send(data)
 
