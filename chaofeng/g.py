@@ -1,6 +1,6 @@
 from chaofeng.ascii import *
 
-STATIC_PATH = './static'
+STATIC_PATH = './static/'
 
 def load_static():
     from os import walk as os_walk
@@ -20,6 +20,6 @@ marks = {}
 def mark(name):
     def mark_inner(frame):
         global marks
-        mraks[name] = frame
+        marks[name] = frame
         return frame
     return mark_inner

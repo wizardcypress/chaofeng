@@ -11,13 +11,14 @@ class BaseUI:
     def send(self,data):
         pass
 
+    def clear(self):
+        pass
+
     def read(self,termitor=['\r\n','\n','\r\0']):
         f = self.frame
         data = f.read()
+        self.clear()
         while data not in termitor :
-            for char in data:
-                print ord(char),
-            print
             self.send(data)
             data = f.read()
         return self.fetch()
@@ -61,6 +62,9 @@ class TextInput(BaseUI):
     def fetch(self):
         return ''.join(self.buffer).encode('gbk')
 
+    def clear(self):
+        self.buffer = []
+
     def send(self,data):
         c = data[0]
         if c == theNULL: return
@@ -87,7 +91,6 @@ class TextInput(BaseUI):
         elif ord(c) >= 32 and c != IAC:
             try:
                 self.buffer.extend(list(data.decode('gbk')))
-                print self.buffer
                 self.frame.write(data)
             except UnicodeDecodeError:
                 pass
