@@ -4,7 +4,7 @@ import chaofeng.ascii as c
 class Hello(Frame):
 
     def initialize(self):
-        self.write('Hello,World!')
+        self.write('Hello,World!\r\n')
         self.close()
 
     def clear(self):
