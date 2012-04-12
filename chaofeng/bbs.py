@@ -4,7 +4,7 @@ from chaofeng import ascii
 class GotoInterrupt(Exception):
     
     def __init__(self,to_where):
-        self.next = to_where
+        self.to_where = to_where
 
 class EndInterrupt(Exception): pass
 
@@ -20,26 +20,20 @@ class Frame:
         self.sock = sock
         self.initialize()
 
-    def loop(self):
-        while True:
-            data = self.read()
-            self.get(data)
-
     def initialize(self):
         pass
 
     def clear(self):
         pass
 
-    def get(self,data):
-        pass
+    get = None
 
     def read(self,buffer_size=1024):
         data = self.sock.recv(buffer_size)
         if not data :
-            self.clear()
-            raise EndInterrupt
+            self.close()
         else:
+            if self.get : self.get(data)
             return data
             
     def write(self,data):
@@ -49,6 +43,7 @@ class Frame:
         raise GotoInterrupt(where)
 
     def close(self):
+        self.clear()
         raise EndInterrupt
 
 class Server:
@@ -60,21 +55,25 @@ class Server:
         self.max_connect = max_connect
 
     def run(self):
+
+        root = self.root
         
-        def new_connect(sock):
-            next_frame = self.root
+        def new_connect(sock,addr):
+            next_frame = root
             session = {}
             sock.send(ascii.CMD_CHAR_PER)
-            while True:
+            flag = True
+            while flag:
                 try:
                     now = next_frame(self,sock,session)
-                    now.loop()
-                except GotoInterrupt,e:
-                    new_frame = e.to_where
+                    flag = False
+                except GotoInterrupt as e:
+                    next_frame = e.to_where
                 except EndInterrupt:
                     break
                 
         s = self.sock
-        while True:
-            new_sock, address = s.accept()
-            self._pool.spawn_n(new_connect,new_sock)
+        try:
+            eventlet.serve(s,new_connect)
+        except KeyboardInterrupt:
+            pass
