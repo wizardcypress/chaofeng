@@ -1,5 +1,6 @@
 import eventlet
 from chaofeng import ascii
+# from eventlet.green.socket import getnameinfo,AI_NUMERICHOST
 
 class GotoInterrupt(Exception):
     
@@ -53,7 +54,8 @@ class Server:
         self._pool = eventlet.GreenPool(max_connect)
         self.root  = root
         self.max_connect = max_connect
-
+        self.sessions = []
+        
     def run(self):
 
         root = self.root
@@ -61,6 +63,7 @@ class Server:
         def new_connect(sock,addr):
             next_frame = root
             session = {}
+            session['ip'],session['port'] = sock.getpeername()
             sock.send(ascii.CMD_CHAR_PER)
             flag = True
             while flag:

@@ -1,4 +1,5 @@
 from chaofeng.ascii import *
+from chaofeng import launch,sleep
 
 class BaseUI:
 
@@ -50,7 +51,6 @@ class NMenu(BaseUI):
             self.select = self.keymap[data]
         else : return
         self.frame.write(backspace*2+move2(*self.data[self.select][0])+'>')
-        
 
 class TextInput(BaseUI):
     
@@ -60,7 +60,7 @@ class TextInput(BaseUI):
         self.buffer_size = max_len
 
     def fetch(self):
-        return ''.join(self.buffer).encode('gbk')
+        return ''.join(self.buffer)
 
     def clear(self):
         self.buffer = []
@@ -68,16 +68,6 @@ class TextInput(BaseUI):
     def send(self,data):
         c = data[0]
         if c == theNULL: return
-        # elif data == k_left :
-        #     if self.insptr > 0:
-        #         self.insptr -= 1
-        #         self._send(movex_d)
-        #     return
-        # elif data == k_right:
-        #     if self.insptr < len(self.buffer):
-        #         self.insptr += 1
-        #         self._send(movex_f)
-        #     return
         elif data == k_backspace or data == k_del :
             if self.buffer :
                 p = self.buffer.pop()
@@ -94,3 +84,55 @@ class TextInput(BaseUI):
                 self.frame.write(data)
             except UnicodeDecodeError:
                 pass
+
+class Password(BaseUI):
+
+    def __init__(self,frame,max_len=100):
+        BaseUI.__init__(self,frame)
+        self.buffer = []
+        self.buffer_size = max_len
+
+    def fetch(self):
+        return ''.join(self.buffer)
+
+    def clear(self):
+        self.buffer = []
+
+    def send(self,data):
+        if data == k_backspace or data == k_del :
+            if self.buffer :
+                self.buffer.pop()
+                self.frame.write(backspace)
+        elif IAC > data > print_ab :
+            self.buffer.append(data)
+            self.frame.write('*')
+            
+class Animation(BaseUI):
+
+    def __init__(self,frame,data):
+        BaseUI.__init__(self,frame)
+        self.data = data
+        self.len = len(self.data)
+        self.select = -1
+
+    def fetch(self):
+        self.select += 1
+        if self.select >= self.len : self.select = 0
+        return self.data[self.select]
+
+    def send(self,data):
+        # self.frame.write(self.fetch()[0])
+        pass
+
+    def read(self):
+        try:
+            while True :
+                data,time = self.fetch()
+                self.frame.write(data)
+                sleep(time)
+        except None:
+            print 'Alert'
+            pass
+
+    def run_bg(self):
+        launch(self.read)
