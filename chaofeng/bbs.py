@@ -20,6 +20,11 @@ class Frame:
         self.server = server
         self.sock = sock
         self.initialize()
+        self.loop()
+
+    def loop(self):
+        while True :
+            self.read()
 
     def initialize(self):
         pass
